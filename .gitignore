@@ -1,0 +1,14 @@
+.gradle/
+build/
+out/
+run/
+*.iml
+.idea/
+.DS_Store
+bin/
+
+# Downloaded CC0 orchestral samples (VSCO-2-CE); only rendered stems ship
+tools/audio/samples-vsco/
+tools/audio/preview.wav
+tools/audio/preview.mp3
+__pycache__/

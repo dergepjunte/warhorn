@@ -1,0 +1,13 @@
+{
+	"schemaVersion": 1,
+	"id": "warhorn-tests",
+	"version": "1.0.0",
+	"name": "Warhorn Tests",
+	"environment": "*",
+	"entrypoints": {
+		"fabric-gametest": ["net.warhorn.siege.SiegeGameTests"]
+	},
+	"depends": {
+		"warhorn": "*"
+	}
+}

@@ -1,0 +1,15 @@
+{
+	"required": true,
+	"package": "net.warhorn.client.mixin",
+	"compatibilityLevel": "JAVA_21",
+	"client": [
+		"CameraMixin",
+		"ClientLevelMixin",
+		"GameRendererMixin",
+		"KeyboardInputMixin",
+		"MinecraftMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

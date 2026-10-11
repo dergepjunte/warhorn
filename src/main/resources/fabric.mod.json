@@ -1,0 +1,34 @@
+{
+	"schemaVersion": 1,
+	"id": "warhorn",
+	"version": "${version}",
+	"name": "Warhorn",
+	"description": "Raids, reforged as a cinematic siege epic.",
+	"authors": [
+		"Junus"
+	],
+	"license": "CC0-1.0",
+	"icon": "assets/warhorn/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"net.warhorn.Warhorn"
+		],
+		"client": [
+			"net.warhorn.client.WarhornClient"
+		]
+	},
+	"mixins": [
+		"warhorn.mixins.json",
+		{
+			"config": "warhorn.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.19.5",
+		"minecraft": "~26.3",
+		"java": ">=25",
+		"fabric-api": "*"
+	}
+}

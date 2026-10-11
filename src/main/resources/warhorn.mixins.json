@@ -1,0 +1,15 @@
+{
+	"required": true,
+	"package": "net.warhorn.mixin",
+	"compatibilityLevel": "JAVA_21",
+	"mixins": [
+		"FireBlockMixin",
+		"LevelMixin",
+		"MobAccessor",
+		"RaidsMixin",
+		"ServerLevelMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}
