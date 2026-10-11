@@ -2,8 +2,10 @@ package net.warhorn.command;
 
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
@@ -23,48 +25,55 @@ public final class WarhornCommands {
 	}
 
 	public static void register() {
-		CommandRegistrationCallback.EVENT.register((dispatcher, context, selection) -> dispatcher.register(
-			literal("warhorn")
+		CommandRegistrationCallback.EVENT.register((dispatcher, context, selection) -> {
+			var root = literal("warhorn")
 				.requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
 				.then(literal("start")
 					.executes(c -> start(c, 1))
 					.then(argument("omen", IntegerArgumentType.integer(1, 5))
 						.executes(c -> start(c, IntegerArgumentType.getInteger(c, "omen")))))
 				.then(literal("stop").executes(WarhornCommands::stop))
-				.then(literal("act")
-					.then(argument("act", IntegerArgumentType.integer(1, 3))
-						.executes(c -> jump(c, SiegeStage.ACT, IntegerArgumentType.getInteger(c, "act") - 1))))
-				.then(literal("warlord").executes(c -> jump(c, SiegeStage.WARLORD_INTRO, 2)))
-				.then(literal("victory").executes(c -> jump(c, SiegeStage.VICTORY, 2)))
-				.then(literal("defeat").executes(c -> jump(c, SiegeStage.DEFEAT, 2)))
-				.then(literal("status").executes(WarhornCommands::status))
-				.then(literal("village").executes(WarhornCommands::toVillage))
+				.then(literal("rebuild").executes(WarhornCommands::rebuild))
 				.then(literal("kit")
 					.executes(c -> kit(c, 1))
 					.then(argument("count", IntegerArgumentType.integer(1, Kit.MAX))
-						.executes(c -> kit(c, IntegerArgumentType.getInteger(c, "count")))))
-				.then(literal("pose")
-					.then(argument("action", StringArgumentType.word())
-						.then(argument("tick", IntegerArgumentType.integer(0, 400))
-							.executes(c -> pose(c, false))
-							.then(literal("laststand").executes(c -> pose(c, true))))))
-				.then(literal("spawn")
-					.then(literal("sapper").executes(WarhornCommands::spawnSapper))
-					.then(literal("ram").executes(WarhornCommands::spawnRam))
-					.then(literal("kidnapper").executes(WarhornCommands::spawnKidnapper))
-					.then(literal("catapult").executes(WarhornCommands::spawnCatapult)))
-				.then(literal("intro")
-					.then(literal("sapper").executes(c -> intro(c, "sapper")))
-					.then(literal("ram").executes(c -> intro(c, "ram")))
-					.then(literal("kidnapper").executes(c -> intro(c, "kidnapper")))
-					.then(literal("catapult").executes(c -> intro(c, "catapult"))))
-				.then(literal("rebuild").executes(WarhornCommands::rebuild))
-				.then(literal("house").executes(WarhornCommands::toHouse))
-				.then(literal("showcase").executes(c -> Showcase.start(c.getSource().getPlayerOrException()) ? 1 : 0))
-				.then(literal("mend")
-					.executes(c -> mend(c, Integer.MAX_VALUE))
-					.then(argument("count", IntegerArgumentType.integer(1))
-						.executes(c -> mend(c, IntegerArgumentType.getInteger(c, "count")))))));
+						.executes(c -> kit(c, IntegerArgumentType.getInteger(c, "count")))));
+			if (FabricLoader.getInstance().isDevelopmentEnvironment()) debug(root);
+			dispatcher.register(root);
+		});
+	}
+
+	private static void debug(LiteralArgumentBuilder<CommandSourceStack> root) {
+		root
+			.then(literal("act")
+				.then(argument("act", IntegerArgumentType.integer(1, 3))
+					.executes(c -> jump(c, SiegeStage.ACT, IntegerArgumentType.getInteger(c, "act") - 1))))
+			.then(literal("warlord").executes(c -> jump(c, SiegeStage.WARLORD_INTRO, 2)))
+			.then(literal("victory").executes(c -> jump(c, SiegeStage.VICTORY, 2)))
+			.then(literal("defeat").executes(c -> jump(c, SiegeStage.DEFEAT, 2)))
+			.then(literal("status").executes(WarhornCommands::status))
+			.then(literal("village").executes(WarhornCommands::toVillage))
+			.then(literal("pose")
+				.then(argument("action", StringArgumentType.word())
+					.then(argument("tick", IntegerArgumentType.integer(0, 400))
+						.executes(c -> pose(c, false))
+						.then(literal("laststand").executes(c -> pose(c, true))))))
+			.then(literal("spawn")
+				.then(literal("sapper").executes(WarhornCommands::spawnSapper))
+				.then(literal("ram").executes(WarhornCommands::spawnRam))
+				.then(literal("kidnapper").executes(WarhornCommands::spawnKidnapper))
+				.then(literal("catapult").executes(WarhornCommands::spawnCatapult)))
+			.then(literal("intro")
+				.then(literal("sapper").executes(c -> intro(c, "sapper")))
+				.then(literal("ram").executes(c -> intro(c, "ram")))
+				.then(literal("kidnapper").executes(c -> intro(c, "kidnapper")))
+				.then(literal("catapult").executes(c -> intro(c, "catapult"))))
+			.then(literal("house").executes(WarhornCommands::toHouse))
+			.then(literal("showcase").executes(c -> Showcase.start(c.getSource().getPlayerOrException()) ? 1 : 0))
+			.then(literal("mend")
+				.executes(c -> mend(c, Integer.MAX_VALUE))
+				.then(argument("count", IntegerArgumentType.integer(1))
+					.executes(c -> mend(c, IntegerArgumentType.getInteger(c, "count")))));
 	}
 
 	private static int pose(CommandContext<CommandSourceStack> c, boolean lastStand) {

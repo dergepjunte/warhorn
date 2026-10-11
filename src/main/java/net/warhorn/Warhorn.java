@@ -25,7 +25,7 @@ public final class Warhorn implements ModInitializer {
 		WarhornNetworking.register();
 		SiegeManager.register();
 		WarhornCommands.register();
-		net.warhorn.command.Showcase.register();
+		if (net.fabricmc.loader.api.FabricLoader.getInstance().isDevelopmentEnvironment()) net.warhorn.command.Showcase.register();
 		net.warhorn.siege.RebuildScene.register();
 		net.fabricmc.fabric.api.event.player.UseBlockCallback.EVENT.register(net.warhorn.siege.RebuildService::use);
 	}

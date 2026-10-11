@@ -36,7 +36,7 @@ public final class WarhornClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		WarhornRenderers.register();
-		QaRunner.register();
+		if (net.fabricmc.loader.api.FabricLoader.getInstance().isDevelopmentEnvironment()) QaRunner.register();
 
 		ClientPlayNetworking.registerGlobalReceiver(CinematicPayload.TYPE, (payload, context) -> CinematicPlayer.play(payload));
 		ClientPlayNetworking.registerGlobalReceiver(SiegeStatePayload.TYPE, (payload, context) -> SiegeClientState.accept(payload));
